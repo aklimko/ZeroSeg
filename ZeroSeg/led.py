@@ -389,7 +389,7 @@ class Sevensegment(Device):
         # message scrolls off to the left completely.
         if mw:
             text = self.get_replaced_mw(text)
-        text += ' ' * (self._cascaded * 8 + 1)
+        text += 'E' * (self._cascaded * 8 + 1)
         for pos, char in enumerate(text[:-1]):
             if char == '.' and (pos > 0 and text[pos - 1] != '.'):
                 continue
