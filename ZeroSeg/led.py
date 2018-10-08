@@ -356,7 +356,7 @@ class Sevensegment(Device):
 
         self.flush()
 
-    def get_replaced_mw(self, text):
+    def _replace_mw(self, text):
         return text.replace('M', "".join(self._M)).replace('W', "".join(self._W))
 
     def write_text(self, device_id, text, dots=None, mw=False):
@@ -367,7 +367,7 @@ class Sevensegment(Device):
         """
         assert 0 <= device_id < self._cascaded, "Invalid deviceId: {0}".format(device_id)
         if mw:
-            text = self.get_replaced_mw(text)
+            text = self._replace_mw(text)
         if len(text) > 8:
             raise OverflowError('{0} too large for display'.format(text))
         text_inv = text.ljust(8)[::-1]
@@ -385,10 +385,10 @@ class Sevensegment(Device):
         Transitions the text message across the devices from left-to-right
         Puts dots directly on previous character, not as an individual char
         """
+        if mw:
+            text = self._replace_mw(text)
         # Add some spaces on (same number as cascaded devices) so that the
         # message scrolls off to the left completely.
-        if mw:
-            text = self.get_replaced_mw(text)
         text += ' ' * (self._cascaded * 8 + 1)
         for pos, char in enumerate(text[:-1]):
             if char == '.' and (pos > 0 and text[pos - 1] != '.'):
