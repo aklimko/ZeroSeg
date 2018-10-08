@@ -273,7 +273,7 @@ class Sevensegment(Device):
         'A': 0x77,
         'B': 0x7f,
         'C': 0x4e,
-        'D': 0x7e,
+        'D': 0x3d,
         'E': 0x4f,
         'F': 0x47,
         'G': 0x5e,
