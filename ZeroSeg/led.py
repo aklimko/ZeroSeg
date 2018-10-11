@@ -296,7 +296,9 @@ class Sevensegment(Device):
         'Z': 0x6d,
         ',': 0x80,
         '.': 0x80,
-        '*': 0x63
+        '*': 0x63,
+        '/': 0x25,
+        '\\': 0x13
     }
 
     def letter(self, device_id, position, char, dot=False, redraw=True):
