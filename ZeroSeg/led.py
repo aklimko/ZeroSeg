@@ -248,7 +248,7 @@ class Sevensegment(Device):
         'h': 0x17,
         'i': 0x10,
         'j': 0x18,
-        # 'k': cant represent
+        'k': 0x57,
         'l': 0x06,
         # < m
         _M[0]: 0x66,
@@ -280,7 +280,7 @@ class Sevensegment(Device):
         'H': 0x37,
         'I': 0x30,
         'J': 0x38,
-        # 'K': cant represent
+        'K': 0x57,
         'L': 0x0e,
         'N': 0x76,
         'O': 0x7e,
