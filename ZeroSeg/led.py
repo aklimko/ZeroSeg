@@ -382,16 +382,12 @@ class Sevensegment(Device):
 
         self.flush()
 
-    def show_message(self, text, delay=0.4, mw=False):
+    def show_message(self, text, delay=0.4, full_scroll=False):
         """
         Transitions the text message across the devices from left-to-right
         Puts dots directly on previous character, not as an individual char
         """
-        if mw:
-            text = self._replace_mw(text)
-        # Add some spaces on (same number as cascaded devices) so that the
-        # message scrolls off to the left completely.
-        text += ' ' * (self._cascaded * 8 + 1)
+        text = self._replace_mw(text) + ' ' * (self._cascaded * (int(full_scroll) + 1) * 4 + 1)
         for pos, char in enumerate(text[:-1]):
             if char == '.' and (pos > 0 and text[pos - 1] != '.'):
                 continue
