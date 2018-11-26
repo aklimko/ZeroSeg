@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
+from threading import Event
 
 
 class Constants(object):
@@ -31,7 +31,7 @@ class Device(object):
     """
     NUM_DIGITS = 8
 
-    def __init__(self, cascaded=1, spi_bus=0, spi_device=0, vertical=False):
+    def __init__(self, cascaded=1, spi_bus=0, spi_device=0, vertical=False, responsive_event=Event()):
         """
         Constructor: `cascaded` should be the number of cascaded MAX7219
         devices that are connected. `vertical` should be set to True if
@@ -45,6 +45,7 @@ class Device(object):
         self._spi = spidev.SpiDev()
         self._spi.open(spi_bus, spi_device)
         self._vertical = vertical
+        self._responsive_event = responsive_event
 
         self.command(Constants.MAX7219_REG_SCANLIMIT, 7)  # show all 8 digits
         self.command(Constants.MAX7219_REG_DECODEMODE, 0)  # use matrix (not digits)
@@ -93,9 +94,7 @@ class Device(object):
 
         for device_id in range(start, end):
             for position in range(self.NUM_DIGITS):
-                self.set_byte(device_id,
-                              position + Constants.MAX7219_REG_DIGIT0,
-                              0, redraw=False)
+                self.set_byte(device_id, position + Constants.MAX7219_REG_DIGIT0, 0, redraw=False)
 
         self.flush()
 
@@ -391,7 +390,10 @@ class Sevensegment(Device):
         for pos, char in enumerate(text[:-1]):
             if char == '.' and (pos > 0 and text[pos - 1] != '.'):
                 continue
-            time.sleep(delay)
+            self._responsive_event.wait(delay)
+            if self._responsive_event.is_set():
+                self._responsive_event.clear()
+                return
             self.scroll_right(redraw=False)
             self._buffer[0] = self._DIGITS.get(char, self._UNDEFINED) \
                 | ((text[pos + 1] == '.' and char != '.') << 7)
